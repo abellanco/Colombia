@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vacation Countdown</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --sky: #dceeff;
+    --sand: #f5efe6;
+    --ink: #1a2635;
+    --muted: #7a8fa3;
+    --accent: #2e6fbd;
+    --soft: #f0f7ff;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: linear-gradient(160deg, #f0f7ff 0%, #fdf9f5 60%, #eaf3ff 100%);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    color: var(--ink);
+  }
+
+  .plane-row {
+    font-size: 2.2rem;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.15em;
+    opacity: 0.55;
+  }
+
+  .card {
+    background: rgba(255,255,255,0.85);
+    border-radius: 28px;
+    padding: 3rem 3.5rem 3rem;
+    max-width: 680px;
+    width: 100%;
+    box-shadow: 0 2px 48px rgba(46,111,189,0.07), 0 1px 8px rgba(46,111,189,0.04);
+    border: 1px solid rgba(220,238,255,0.9);
+    text-align: center;
+  }
+
+  .label-top {
+    font-size: 0.78rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 500;
+    margin-bottom: 0.6rem;
+  }
+
+  .event-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    line-height: 1.1;
+    color: var(--ink);
+    margin-bottom: 0.3rem;
+  }
+
+  .event-title.italic {
+    font-style: italic;
+  }
+
+  .destination-date {
+    font-size: 0.88rem;
+    color: var(--muted);
+    margin-bottom: 2.5rem;
+    font-weight: 400;
+    letter-spacing: 0.03em;
+  }
+
+  .countdown-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .unit {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .unit-number {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(2.6rem, 7vw, 4.2rem);
+    line-height: 1;
+    color: var(--ink);
+    min-width: 2ch;
+    text-align: center;
+    transition: transform 0.15s ease;
+  }
+
+  .unit-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 500;
+  }
+
+  .divider {
+    font-family: 'DM Serif Display', serif;
+    font-size: 3rem;
+    color: #d0e4f5;
+    line-height: 1;
+    align-self: flex-start;
+    padding-top: 0.1rem;
+    display: flex;
+    align-items: center;
+    height: 100%;
+  }
+
+  .countdown-grid-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .separator {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    color: #c8dff5;
+    line-height: 1;
+    padding-bottom: 1.2rem;
+  }
+
+  .done-msg {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2.2rem;
+    font-style: italic;
+    color: var(--accent);
+    margin-bottom: 2.5rem;
+  }
+
+  hr.soft {
+    border: none;
+    border-top: 1px solid rgba(220,238,255,0.9);
+    margin-bottom: 1.8rem;
+  }
+
+  .edit-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    align-items: stretch;
+  }
+
+  .edit-row {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+  }
+
+  .edit-row label {
+    font-size: 0.78rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 500;
+    min-width: 70px;
+    text-align: left;
+  }
+
+  .edit-row input {
+    flex: 1;
+    border: 1.5px solid rgba(180,210,240,0.7);
+    border-radius: 10px;
+    padding: 0.55rem 0.9rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    color: var(--ink);
+    background: var(--soft);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .edit-row input:focus {
+    border-color: var(--accent);
+  }
+
+  .btn-save {
+    margin-top: 0.3rem;
+    padding: 0.65rem 2rem;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.15s;
+    align-self: flex-end;
+  }
+
+  .btn-save:hover { opacity: 0.88; transform: translateY(-1px); }
+  .btn-save:active { transform: scale(0.98); }
+
+  .footer-note {
+    margin-top: 2rem;
+    font-size: 0.75rem;
+    color: #b0c4d8;
+    letter-spacing: 0.05em;
+  }
+
+  @media (max-width: 500px) {
+    .card { padding: 2rem 1.4rem 2rem; }
+    .separator { font-size: 1.8rem; }
+    .edit-row { flex-direction: column; align-items: flex-start; gap: 0.3rem; }
+    .edit-row label { min-width: unset; }
+    .edit-row input { width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<div class="plane-row">✈</div>
+
+<div class="card">
+  <div class="label-top">Counting down to</div>
+  <h1 class="event-title italic" id="display-title">My Dream Vacation</h1>
+  <p class="destination-date" id="display-date">Set your destination date below</p>
+
+  <div id="countdown-area">
+    <div class="countdown-grid-wrapper" id="timer-display">
+      <div class="unit">
+        <div class="unit-number" id="days">--</div>
+        <div class="unit-label">Days</div>
+      </div>
+      <div class="separator">·</div>
+      <div class="unit">
+        <div class="unit-number" id="hours">--</div>
+        <div class="unit-label">Hours</div>
+      </div>
+      <div class="separator">·</div>
+      <div class="unit">
+        <div class="unit-number" id="minutes">--</div>
+        <div class="unit-label">Minutes</div>
+      </div>
+      <div class="separator">·</div>
+      <div class="unit">
+        <div class="unit-number" id="seconds">--</div>
+        <div class="unit-label">Seconds</div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="soft">
+
+  <div class="edit-section">
+    <div class="edit-row">
+      <label for="inp-title">Event</label>
+      <input id="inp-title" type="text" placeholder="My Dream Vacation" maxlength="60">
+    </div>
+    <div class="edit-row">
+      <label for="inp-dest">Where</label>
+      <input id="inp-dest" type="text" placeholder="Bali, Indonesia" maxlength="60">
+    </div>
+    <div class="edit-row">
+      <label for="inp-date">Date</label>
+      <input id="inp-date" type="datetime-local">
+    </div>
+    <button class="btn-save" onclick="save()">Save & Start Countdown</button>
+  </div>
+
+  <p class="footer-note" id="footer-note"></p>
+</div>
+
+<script>
+  const STORAGE_KEY = 'vacation-countdown-v1';
+
+  let target = null;
+  let ticker = null;
+
+  function pad(n) { return String(Math.floor(n)).padStart(2, '0'); }
+
+  function tick() {
+    if (!target) return;
+    const now = Date.now();
+    const diff = target - now;
+
+    if (diff <= 0) {
+      document.getElementById('days').textContent = '00';
+      document.getElementById('hours').textContent = '00';
+      document.getElementById('minutes').textContent = '00';
+      document.getElementById('seconds').textContent = '00';
+      document.getElementById('footer-note').textContent = "You're there! Have an amazing trip ✈";
+      clearInterval(ticker);
+      return;
+    }
+
+    const totalSec = Math.floor(diff / 1000);
+    const d = Math.floor(totalSec / 86400);
+    const h = Math.floor((totalSec % 86400) / 3600);
+    const m = Math.floor((totalSec % 3600) / 60);
+    const s = totalSec % 60;
+
+    document.getElementById('days').textContent = d;
+    document.getElementById('hours').textContent = pad(h);
+    document.getElementById('minutes').textContent = pad(m);
+    document.getElementById('seconds').textContent = pad(s);
+  }
+
+  function save() {
+    const title = document.getElementById('inp-title').value.trim() || 'My Dream Vacation';
+    const dest = document.getElementById('inp-dest').value.trim();
+    const dateVal = document.getElementById('inp-date').value;
+
+    if (!dateVal) {
+      document.getElementById('footer-note').textContent = 'Please pick a date first!';
+      return;
+    }
+
+    target = new Date(dateVal).getTime();
+    const data = { title, dest, dateVal };
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch(e) {}
+
+    render(title, dest, dateVal);
+  }
+
+  function render(title, dest, dateVal) {
+    document.getElementById('display-title').textContent = title;
+
+    const d = new Date(dateVal);
+    const opts = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    let dateStr = d.toLocaleDateString(undefined, opts);
+    if (dest) dateStr = dest + ' · ' + dateStr;
+    document.getElementById('display-date').textContent = dateStr;
+
+    document.getElementById('footer-note').textContent = '';
+
+    clearInterval(ticker);
+    tick();
+    ticker = setInterval(tick, 1000);
+  }
+
+  function load() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return;
+      const { title, dest, dateVal } = JSON.parse(raw);
+      target = new Date(dateVal).getTime();
+      document.getElementById('inp-title').value = title || '';
+      document.getElementById('inp-dest').value = dest || '';
+      document.getElementById('inp-date').value = dateVal || '';
+      render(title, dest, dateVal);
+    } catch(e) {}
+  }
+
+  load();
+</script>
+</body>
+</html>
