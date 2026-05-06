@@ -1,367 +1,246 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Vacation Countdown</title>
+<title>Colombia 2026 | El Gran Viaje</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --sky: #dceeff;
-    --sand: #f5efe6;
     --ink: #1a2635;
     --muted: #7a8fa3;
-    --accent: #2e6fbd;
-    --soft: #f0f7ff;
+    --accent: #ce1126; 
+    --gold: #fcd116;
+    --blue: #003893;
+    --sand: #fdf9f5;
   }
 
   body {
     font-family: 'DM Sans', sans-serif;
-    background: linear-gradient(160deg, #f0f7ff 0%, #fdf9f5 60%, #eaf3ff 100%);
+    background: linear-gradient(135deg, #e0f2fe 0%, #fdf9f5 50%, #fff7ed 100%);
     min-height: 100vh;
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 2rem;
+    padding: 1.5rem;
     color: var(--ink);
+    overflow-x: hidden;
   }
 
-  .plane-row {
-    font-size: 2.2rem;
-    margin-bottom: 1.5rem;
-    letter-spacing: 0.15em;
-    opacity: 0.55;
+  /* Animación del avión de fondo */
+  .plane-bg {
+    font-size: 3rem;
+    position: absolute;
+    top: 15%;
+    left: -100px;
+    animation: fly 18s linear infinite;
+    opacity: 0.4;
+    z-index: 0;
+  }
+
+  @keyframes fly {
+    0% { left: -100px; transform: translateY(0) rotate(5deg); }
+    50% { transform: translateY(30px) rotate(0deg); }
+    100% { left: 110%; transform: translateY(-30px) rotate(-5deg); }
   }
 
   .card {
-    background: rgba(255,255,255,0.85);
-    border-radius: 28px;
-    padding: 3rem 3.5rem 3rem;
-    max-width: 680px;
+    background: white;
+    border-radius: 35px;
+    overflow: hidden;
+    max-width: 450px;
     width: 100%;
-    box-shadow: 0 2px 48px rgba(46,111,189,0.07), 0 1px 8px rgba(46,111,189,0.04);
-    border: 1px solid rgba(220,238,255,0.9);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+    position: relative;
+    z-index: 1;
+    animation: slideUp 1s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* Contenedor de la imagen con animación de zoom */
+  .image-container {
+    width: 100%;
+    height: 400px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    animation: kenBurns 10s ease-in-out infinite alternate;
+  }
+
+  .image-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 50%;
+    background: linear-gradient(to top, rgba(255,255,255,1), transparent);
+  }
+
+  @keyframes kenBurns {
+    0% { transform: scale(1); }
+    100% { transform: scale(1.15); }
+  }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(40px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .content {
+    padding: 0 2.5rem 2.5rem;
     text-align: center;
+    margin-top: -20px;
+    position: relative;
   }
 
   .label-top {
-    font-size: 0.78rem;
-    letter-spacing: 0.22em;
+    font-size: 0.75rem;
+    letter-spacing: 0.4em;
     text-transform: uppercase;
-    color: var(--accent);
-    font-weight: 500;
-    margin-bottom: 0.6rem;
+    color: var(--blue);
+    font-weight: 700;
+    margin-bottom: 0.5rem;
   }
 
   .event-title {
     font-family: 'DM Serif Display', serif;
-    font-size: clamp(2rem, 5vw, 3.2rem);
-    line-height: 1.1;
+    font-size: 2.8rem;
     color: var(--ink);
-    margin-bottom: 0.3rem;
-  }
-
-  .event-title.italic {
-    font-style: italic;
+    line-height: 1;
+    margin-bottom: 0.8rem;
   }
 
   .destination-date {
-    font-size: 0.88rem;
+    font-size: 0.9rem;
     color: var(--muted);
-    margin-bottom: 2.5rem;
-    font-weight: 400;
-    letter-spacing: 0.03em;
+    margin-bottom: 2rem;
+    font-weight: 500;
   }
 
+  /* Grid de cuenta atrás con estilo minimalista */
   .countdown-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 1rem;
-    margin-bottom: 2.5rem;
+    gap: 0.5rem;
+    background: var(--sand);
+    padding: 1.2rem;
+    border-radius: 20px;
+    border: 1px solid rgba(0,0,0,0.03);
   }
 
   .unit {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 0.4rem;
   }
 
   .unit-number {
     font-family: 'DM Serif Display', serif;
-    font-size: clamp(2.6rem, 7vw, 4.2rem);
-    line-height: 1;
-    color: var(--ink);
-    min-width: 2ch;
-    text-align: center;
-    transition: transform 0.15s ease;
+    font-size: 1.8rem;
+    color: var(--accent);
   }
 
   .unit-label {
-    font-size: 0.72rem;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--muted);
-    font-weight: 500;
-  }
-
-  .divider {
-    font-family: 'DM Serif Display', serif;
-    font-size: 3rem;
-    color: #d0e4f5;
-    line-height: 1;
-    align-self: flex-start;
-    padding-top: 0.1rem;
-    display: flex;
-    align-items: center;
-    height: 100%;
-  }
-
-  .countdown-grid-wrapper {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    margin-bottom: 2.5rem;
-  }
-
-  .separator {
-    font-family: 'DM Serif Display', serif;
-    font-size: clamp(2rem, 5vw, 3.2rem);
-    color: #c8dff5;
-    line-height: 1;
-    padding-bottom: 1.2rem;
-  }
-
-  .done-msg {
-    font-family: 'DM Serif Display', serif;
-    font-size: 2.2rem;
-    font-style: italic;
-    color: var(--accent);
-    margin-bottom: 2.5rem;
-  }
-
-  hr.soft {
-    border: none;
-    border-top: 1px solid rgba(220,238,255,0.9);
-    margin-bottom: 1.8rem;
-  }
-
-  .edit-section {
-    display: flex;
-    flex-direction: column;
-    gap: 0.85rem;
-    align-items: stretch;
-  }
-
-  .edit-row {
-    display: flex;
-    gap: 0.75rem;
-    align-items: center;
-  }
-
-  .edit-row label {
-    font-size: 0.78rem;
+    font-size: 0.6rem;
     letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--muted);
-    font-weight: 500;
-    min-width: 70px;
-    text-align: left;
+    font-weight: 700;
   }
 
-  .edit-row input {
-    flex: 1;
-    border: 1.5px solid rgba(180,210,240,0.7);
-    border-radius: 10px;
-    padding: 0.55rem 0.9rem;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.9rem;
-    color: var(--ink);
-    background: var(--soft);
-    outline: none;
-    transition: border-color 0.2s;
-  }
-
-  .edit-row input:focus {
-    border-color: var(--accent);
-  }
-
-  .btn-save {
-    margin-top: 0.3rem;
-    padding: 0.65rem 2rem;
-    background: var(--accent);
-    color: #fff;
-    border: none;
-    border-radius: 12px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.88rem;
-    font-weight: 500;
-    letter-spacing: 0.04em;
-    cursor: pointer;
-    transition: opacity 0.2s, transform 0.15s;
-    align-self: flex-end;
-  }
-
-  .btn-save:hover { opacity: 0.88; transform: translateY(-1px); }
-  .btn-save:active { transform: scale(0.98); }
-
-  .footer-note {
+  .flag-detail {
+    display: flex;
+    justify-content: center;
+    gap: 4px;
     margin-top: 2rem;
-    font-size: 0.75rem;
-    color: #b0c4d8;
-    letter-spacing: 0.05em;
   }
+  .dot { width: 8px; height: 8px; border-radius: 50%; }
+  .d-y { background: var(--gold); }
+  .d-b { background: var(--blue); }
+  .d-r { background: var(--accent); }
 
-  @media (max-width: 500px) {
-    .card { padding: 2rem 1.4rem 2rem; }
-    .separator { font-size: 1.8rem; }
-    .edit-row { flex-direction: column; align-items: flex-start; gap: 0.3rem; }
-    .edit-row label { min-width: unset; }
-    .edit-row input { width: 100%; }
+  @media (max-width: 400px) {
+    .content { padding: 0 1.5rem 2rem; }
+    .event-title { font-size: 2.2rem; }
   }
 </style>
 </head>
 <body>
 
-<div class="plane-row">✈</div>
+<div class="plane-bg">✈️</div>
 
 <div class="card">
-  <div class="label-top">Counting down to</div>
-  <h1 class="event-title italic" id="display-title">My Dream Vacation</h1>
-  <p class="destination-date" id="display-date">Set your destination date below</p>
+  <div class="image-container">
+    <img src="image_85e5f0.jpg" alt="Colombia Expedition">
+    <div class="image-overlay"></div>
+  </div>
+  
+  <div class="content">
+    <div class="label-top">Próxima Aventura</div>
+    <h1 class="event-title">Colombia</h1>
+    <p class="destination-date">27 de Junio, 2026</p>
 
-  <div id="countdown-area">
-    <div class="countdown-grid-wrapper" id="timer-display">
+    <div class="countdown-grid">
       <div class="unit">
-        <div class="unit-number" id="days">--</div>
-        <div class="unit-label">Days</div>
+        <div class="unit-number" id="days">00</div>
+        <div class="unit-label">Días</div>
       </div>
-      <div class="separator">·</div>
       <div class="unit">
-        <div class="unit-number" id="hours">--</div>
-        <div class="unit-label">Hours</div>
+        <div class="unit-number" id="hours">00</div>
+        <div class="unit-label">Horas</div>
       </div>
-      <div class="separator">·</div>
       <div class="unit">
-        <div class="unit-number" id="minutes">--</div>
-        <div class="unit-label">Minutes</div>
+        <div class="unit-number" id="minutes">00</div>
+        <div class="unit-label">Min</div>
       </div>
-      <div class="separator">·</div>
       <div class="unit">
-        <div class="unit-number" id="seconds">--</div>
-        <div class="unit-label">Seconds</div>
+        <div class="unit-number" id="seconds">00</div>
+        <div class="unit-label">Seg</div>
       </div>
+    </div>
+
+    <div class="flag-detail">
+      <div class="dot d-y"></div>
+      <div class="dot d-b"></div>
+      <div class="dot d-r"></div>
     </div>
   </div>
-
-  <hr class="soft">
-
-  <div class="edit-section">
-    <div class="edit-row">
-      <label for="inp-title">Event</label>
-      <input id="inp-title" type="text" placeholder="My Dream Vacation" maxlength="60">
-    </div>
-    <div class="edit-row">
-      <label for="inp-dest">Where</label>
-      <input id="inp-dest" type="text" placeholder="Bali, Indonesia" maxlength="60">
-    </div>
-    <div class="edit-row">
-      <label for="inp-date">Date</label>
-      <input id="inp-date" type="datetime-local">
-    </div>
-    <button class="btn-save" onclick="save()">Save & Start Countdown</button>
-  </div>
-
-  <p class="footer-note" id="footer-note"></p>
 </div>
 
 <script>
-  const STORAGE_KEY = 'vacation-countdown-v1';
+  // Fecha fija: 27 de Junio de 2026
+  const targetDate = new Date("June 27, 2026 00:00:00").getTime();
 
-  let target = null;
-  let ticker = null;
-
-  function pad(n) { return String(Math.floor(n)).padStart(2, '0'); }
-
-  function tick() {
-    if (!target) return;
-    const now = Date.now();
-    const diff = target - now;
+  function update() {
+    const now = new Date().getTime();
+    const diff = targetDate - now;
 
     if (diff <= 0) {
-      document.getElementById('days').textContent = '00';
-      document.getElementById('hours').textContent = '00';
-      document.getElementById('minutes').textContent = '00';
-      document.getElementById('seconds').textContent = '00';
-      document.getElementById('footer-note').textContent = "You're there! Have an amazing trip ✈";
-      clearInterval(ticker);
+      document.querySelector('.countdown-grid').innerHTML = "<div style='grid-column: span 4; font-family: \"DM Serif Display\"; font-size: 1.5rem; color: var(--blue)'>¡El viaje ha comenzado! 🇨🇴</div>";
       return;
     }
 
-    const totalSec = Math.floor(diff / 1000);
-    const d = Math.floor(totalSec / 86400);
-    const h = Math.floor((totalSec % 86400) / 3600);
-    const m = Math.floor((totalSec % 3600) / 60);
-    const s = totalSec % 60;
+    const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const s = Math.floor((diff % (1000 * 60)) / 1000);
 
     document.getElementById('days').textContent = d;
-    document.getElementById('hours').textContent = pad(h);
-    document.getElementById('minutes').textContent = pad(m);
-    document.getElementById('seconds').textContent = pad(s);
+    document.getElementById('hours').textContent = String(h).padStart(2, '0');
+    document.getElementById('minutes').textContent = String(m).padStart(2, '0');
+    document.getElementById('seconds').textContent = String(s).padStart(2, '0');
   }
 
-  function save() {
-    const title = document.getElementById('inp-title').value.trim() || 'My Dream Vacation';
-    const dest = document.getElementById('inp-dest').value.trim();
-    const dateVal = document.getElementById('inp-date').value;
-
-    if (!dateVal) {
-      document.getElementById('footer-note').textContent = 'Please pick a date first!';
-      return;
-    }
-
-    target = new Date(dateVal).getTime();
-    const data = { title, dest, dateVal };
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch(e) {}
-
-    render(title, dest, dateVal);
-  }
-
-  function render(title, dest, dateVal) {
-    document.getElementById('display-title').textContent = title;
-
-    const d = new Date(dateVal);
-    const opts = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-    let dateStr = d.toLocaleDateString(undefined, opts);
-    if (dest) dateStr = dest + ' · ' + dateStr;
-    document.getElementById('display-date').textContent = dateStr;
-
-    document.getElementById('footer-note').textContent = '';
-
-    clearInterval(ticker);
-    tick();
-    ticker = setInterval(tick, 1000);
-  }
-
-  function load() {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (!raw) return;
-      const { title, dest, dateVal } = JSON.parse(raw);
-      target = new Date(dateVal).getTime();
-      document.getElementById('inp-title').value = title || '';
-      document.getElementById('inp-dest').value = dest || '';
-      document.getElementById('inp-date').value = dateVal || '';
-      render(title, dest, dateVal);
-    } catch(e) {}
-  }
-
-  load();
+  setInterval(update, 1000);
+  update();
 </script>
+
 </body>
 </html>
